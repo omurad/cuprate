@@ -386,12 +386,20 @@ impl super::BlockchainManager {
             return Ok(AddAltBlock::Reorged);
         }
 
+        // Broadcast the alt block to peers before writing to database.
+        let block_blob = Bytes::copy_from_slice(&alt_block_info.block_blob);
+        let alt_block_height = alt_block_info.height;
+
         self.blockchain_write_handle
             .ready()
             .await
             .expect(PANIC_CRITICAL_SERVICE_ERROR)
             .call(BlockchainWriteRequest::WriteAltBlock(alt_block_info))
             .await?;
+
+        // Broadcast the alt block to the network so other nodes have it.
+        // This prevents unnecessary syncing if this alt chain becomes the main chain.
+        self.broadcast_block(block_blob, alt_block_height).await;
 
         Ok(AddAltBlock::Cached(true))
     }
