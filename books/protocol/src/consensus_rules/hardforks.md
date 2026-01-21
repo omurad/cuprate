@@ -21,7 +21,7 @@ When a hard-fork is added to Monero's protocol it must specify a `threshold`, a 
 blocks in the window that must vote for this fork (or a later one) for it to activate. For all current forks the threshold is 0 meaning
 that no votes are needed for the fork to activate.
 
-Monero keeps track of a week (10,080 blocks) worth of votes[^window-size], when a new block is added Monero works backwards through the
+Monero keeps track of a week's (10,080 blocks) worth of votes[^window-size], when a new block is added Monero works backwards through the
 list of hard-forks (latest to oldest) tallying the votes and checking if the number of votes is bigger than the amount needed[^accepting-hfs],
 votes for later hardforks are also votes for previous hard-forks. The amount needed is calculated:
 
